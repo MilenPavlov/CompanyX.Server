@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using CompanyX.Data.Context;
 using CompanyX.Data.CustomModels;
 using CompanyX.Data.Interfaces;
 using CompanyX.Data.Models;
-using CompanyX.Data.Repositories;
 using CompanyX.Data.Services;
 
 namespace CompanyX.API.Controllers
@@ -44,7 +36,7 @@ namespace CompanyX.API.Controllers
 
 
         // GET: api/Employees/5
-         [Authorize]
+        [Authorize]
         [ResponseType(typeof(Employee))]
         public IHttpActionResult GetEmployee(int id)
         {
@@ -53,8 +45,7 @@ namespace CompanyX.API.Controllers
             {
                 return NotFound();
             }
-
-            
+          
             return Ok(_entityFactory().CreateEmployee(employee));
         }
 
@@ -64,8 +55,6 @@ namespace CompanyX.API.Controllers
         [ResponseType(typeof(Employee))]
         public IHttpActionResult PutEmployee(EmployeePutModel employeePutModel)
         {
-
-
             var employee = _entityFactory().CreateBaseEmployeePut(employeePutModel);
             if (!ModelState.IsValid)
             {
@@ -91,8 +80,7 @@ namespace CompanyX.API.Controllers
                 }
                 
             }
-             return Ok(string.Format("Employee {0} {1} updated successfuly", employee.FirstName, employee.LastName));
-             //return Ok("HttpStatusCode.NoContent");
+             return Ok(string.Format("Employee {0} {1} updated successfully", employee.FirstName, employee.LastName));
         }
 
         // POST: api/Employees
@@ -120,7 +108,6 @@ namespace CompanyX.API.Controllers
              _unit.EmployeeRepository.Insert(employee);
              _unit.Save();
 
-            //return CreatedAtRoute("DefaultApi", new { id = employee.EmployeeId }, employee);
             return Ok(string.Format("Employee: {0} {1} created", employee.FirstName, employee.LastName));
         }
 

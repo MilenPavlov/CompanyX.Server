@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using System.Web.Http;
-using CompanyX.Data.Models;
 using Microsoft.AspNet.Identity;
 using CompanyX.Data.Repositories;
-using Microsoft.Owin;
-using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.Cookies;
 
 namespace CompanyX.API.Controllers
 {
@@ -19,7 +9,7 @@ namespace CompanyX.API.Controllers
     public class AccountController : ApiController
     {
         private AuthRepository _repo = null;
-        //todo add DI here??
+        ////todo add DI here??
         public AccountController()
         {
             _repo = new AuthRepository();
@@ -47,6 +37,7 @@ namespace CompanyX.API.Controllers
 
         //    return Ok();
         //}
+
         [AllowAnonymous]
         [Route("ping")]
         [HttpGet]

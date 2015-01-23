@@ -1,6 +1,4 @@
-using CompanyX.Data.Context;
 using CompanyX.Data.Interfaces;
-using CompanyX.Data.Repositories;
 using CompanyX.Data.Services;
 using Microsoft.Practices.Unity;
 using System.Web.Http;
@@ -23,7 +21,6 @@ namespace CompanyX.API
             config.DependencyResolver = resolver;
             container.RegisterType<IEntityFactory, EntityFactory>();
             container.RegisterType<IUnitOfWork, UnitOfWork>();
-            //container.RegisterType<IDbContext, CompanyContext>( new ContainerControlledLifetimeManager());
         }
     }
 }
