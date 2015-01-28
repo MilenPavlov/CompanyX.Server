@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CompanyX.Data.CustomModels;
 using CompanyX.Data.Models;
 using CompanyX.Data.Interfaces;
@@ -15,7 +16,7 @@ namespace CompanyX.Data.Services
         }
         public EmployeeViewModel CreateEmployee(Employee employee)
         {
-            return new EmployeeViewModel
+            return  new EmployeeViewModel
             {
                 EmployeeId = employee.EmployeeId,
                 Company = employee.Company.Name,
@@ -30,10 +31,11 @@ namespace CompanyX.Data.Services
             };
         }
 
-       
-        public List<EmployeeViewModel> CreateEmployees(List<Employee> employees)
+
+
+        public async Task<IEnumerable<EmployeeViewModel>>CreateEmployees(IEnumerable<Employee> employees)
         {
-            var employeeViewModels = employees.Select(CreateEmployee).ToList();
+            var employeeViewModels =  (employees.Select(CreateEmployee).ToList()).ToList();
 
             return employeeViewModels;
         }

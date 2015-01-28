@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using CompanyX.Data.CustomModels;
@@ -23,9 +24,9 @@ namespace CompanyX.API.Controllers
 
         // GET: api/Employees
         [Authorize]
-        public IHttpActionResult GetEmployees()
+        public async Task<IHttpActionResult> GetEmployees()
         {
-            var emps = _entityFactory().CreateEmployees( _unit.EmployeeRepository.Get().ToList());
+            var emps = await _entityFactory().CreateEmployees( await _unit.EmployeeRepository.GetAsync());
             var response = new EmployeesResponce
             {
                 Employees = emps,
@@ -38,9 +39,9 @@ namespace CompanyX.API.Controllers
         // GET: api/Employees/5
         [Authorize]
         [ResponseType(typeof(Employee))]
-        public IHttpActionResult GetEmployee(int id)
+        public async Task<IHttpActionResult> GetEmployee(int id)
         {
-            Employee employee = _unit.EmployeeRepository.GetByID(id);
+            var employee = await _unit.EmployeeRepository.GetByIdAsync(id);
             if (employee == null)
             {
                 return NotFound();
@@ -53,7 +54,7 @@ namespace CompanyX.API.Controllers
         //Update
         [Authorize]
         [ResponseType(typeof(Employee))]
-        public IHttpActionResult PutEmployee(EmployeePutModel employeePutModel)
+        public async Task<IHttpActionResult> PutEmployee(EmployeePutModel employeePutModel)
         {
             var employee = _entityFactory().CreateBaseEmployeePut(employeePutModel);
             if (!ModelState.IsValid)
@@ -68,7 +69,7 @@ namespace CompanyX.API.Controllers
 
             try
             {
-                 _unit.EmployeeRepository.Update(employee);
+                 await _unit.EmployeeRepository.UpdateAsync(employee);
                  _unit.Save();
                
             }
@@ -87,13 +88,14 @@ namespace CompanyX.API.Controllers
         [Authorize]
         [ResponseType(typeof(Employee))]
         [HttpPost]
-        public IHttpActionResult PostEmployee(EmployeeViewModel employeeViewModel)
+        public async Task<IHttpActionResult> PostEmployee(EmployeeViewModel employeeViewModel)
         {
-            if (
-                _unit.EmployeeRepository.Get(
+            var emps = await
+                _unit.EmployeeRepository.GetAsync(
                     x =>
                         x.FirstName == employeeViewModel.FirstName && x.LastName == employeeViewModel.LastName &&
-                        x.DateOfBitrh == employeeViewModel.DateOfBirth).Any())
+                        x.DateOfBitrh == employeeViewModel.DateOfBirth);
+            if (emps.Any())
             {
                 return
                     Ok(string.Format("Error: Employee {0} {1} already exists in the database", employeeViewModel.FirstName,
@@ -105,7 +107,7 @@ namespace CompanyX.API.Controllers
                 return BadRequest(ModelState);
             }
        
-             _unit.EmployeeRepository.Insert(employee);
+             await _unit.EmployeeRepository.InsertAsync(employee);
              _unit.Save();
 
             return Ok(string.Format("Employee: {0} {1} created", employee.FirstName, employee.LastName));
@@ -115,17 +117,15 @@ namespace CompanyX.API.Controllers
 
         [Authorize]
         [ResponseType(typeof(Employee))]
-        public  IHttpActionResult DeleteEmployee(int id)
+        public async Task<IHttpActionResult> DeleteEmployee(int id)
         {
-
-
-            Employee employee =  _unit.EmployeeRepository.GetByID(id);
+            var employee =  await _unit.EmployeeRepository.GetByIdAsync(id);
             if (employee == null)
             {
                 return NotFound();
             }
 
-            _unit.EmployeeRepository.Delete(id);
+            await _unit.EmployeeRepository.DeleteAsync(id);
             _unit.Save();
 
             return Ok(employee);
@@ -139,10 +139,9 @@ namespace CompanyX.API.Controllers
             }
             base.Dispose(disposing);
         }
-
-        private  bool EmployeeExists(int id)
+        private bool EmployeeExists(int id)
         {
-            return  _unit.EmployeeRepository.Get().Count(e => e.EmployeeId == id) > 0;
+            return  _unit.EmployeeRepository.Get().Count(e => e.EmployeeId == id) > 0;          
         }
     }
 }

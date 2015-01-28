@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using CompanyX.Data.Context;
 using CompanyX.Data.Interfaces;
 using CompanyX.Data.Models;
@@ -36,14 +37,14 @@ namespace CompanyX.Data.Repositories
             this.disposed = true;
         }
 
-        public IEnumerable<Employee> GetEmployees()
+        public async Task<IEnumerable<Employee>> GetEmployees()
         {
-            return _context.Employees.ToList();
+            return await _context.Employees.ToListAsync();
         }
 
-        public Employee GetEmployeeByID(int EmployeeId)
+        public async Task<Employee> GetEmployeeByID(int EmployeeId)
         {
-            return _context.Employees.Find(EmployeeId);
+            return await _context.Employees.FindAsync(EmployeeId);
         }
 
         public void InsertEmployee(Employee employee)
@@ -51,9 +52,9 @@ namespace CompanyX.Data.Repositories
             _context.Employees.Add(employee);
         }
 
-        public void DeleteEmployee(int EmployeeId)
+        public async Task DeleteEmployee(int EmployeeId)
         {
-            var employee = _context.Employees.Find(EmployeeId);
+            var employee = await _context.Employees.FindAsync(EmployeeId);
             if (employee != null)
             {
                 _context.Employees.Remove(employee);
@@ -65,9 +66,14 @@ namespace CompanyX.Data.Repositories
             _context.Entry(employee).State = EntityState.Modified;
         }
 
-        public void Save()
+        public async Task UpdateEmployeeAsync(Employee employee)
         {
-            _context.SaveChanges();
+            _context.Entry(employee).State = EntityState.Modified;
+        }
+
+        public async Task Save()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

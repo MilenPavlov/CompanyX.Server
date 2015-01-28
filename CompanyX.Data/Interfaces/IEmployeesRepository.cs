@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CompanyX.Data.Models;
 
 namespace CompanyX.Data.Interfaces
 {
     public interface IEmployeesRepository : IDisposable
     {
-        IEnumerable<Employee> GetEmployees();
-        Employee GetEmployeeByID(int EmployeeId);
+        Task<IEnumerable<Employee>> GetEmployees();
+        Task<Employee> GetEmployeeByID(int EmployeeId);
         void InsertEmployee(Employee employee);
-        void DeleteEmployee(int EmployeeId);
-        void UpdateEmployee(Employee student);
-        void Save();
+        Task DeleteEmployee(int EmployeeId);
+        Task UpdateEmployeeAsync(Employee student);
+        Task Save();
     }
 }

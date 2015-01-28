@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using CompanyX.Data.CustomModels;
 using CompanyX.Data.Models;
 
@@ -8,7 +9,7 @@ namespace CompanyX.Data.Interfaces
     {
         EmployeeViewModel CreateEmployee(Employee employee);
 
-        List<EmployeeViewModel> CreateEmployees(List<Employee> employees);
+        Task<IEnumerable<EmployeeViewModel>> CreateEmployees(IEnumerable<Employee> employees);
 
         Employee CreateBaseEmployee(EmployeeViewModel employeeViewModel);
 
